@@ -2,42 +2,51 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const actions = require("./actions/actions");
 
 
 const restService = express();
 restService.use(bodyParser.json());
 
 restService.post('/hook', function (req, res) {
-
-    console.log('hook request');
-
     try {
-        var speech = 'empty speech';
-
         if (req.body) {
+            console.log("[/hook] we have a request!");
             var requestBody = req.body;
 
             if (requestBody.result) {
-                speech = '';
+                var actionName = requestBody.result.action;
+                if (actionName) {
+                    console.log("[/hook] we have an action name! " + actionName);
 
-                if (requestBody.result.fulfillment) {
-                    speech += requestBody.result.fulfillment.speech;
-                    speech += ' ';
-                }
+                    var action = actions[actionName];
+                    if (action == undefined || action == null) {
+                        return res.status(404).json({
+                            status: {
+                                code: 404,
+                                msg: "Action not defined: " + actionName
+                            }
+                        });
+                    } else {
+                        var params = requestBody.result.parameters
+                        
+                        action(params, function(data, error) {
+                            if (error) {
+                                return res.status(500).json({
+                                    code: 501,
+                                    msg: error
+                                });
+                            }
 
-                if (requestBody.result.action) {
-                    speech += 'action: ' + requestBody.result.action;
+                            //success
+                            return res.json ({
+                                data: data
+                            });
+                        });
+                    }
                 }
             }
         }
-
-        console.log('result: ', speech);
-
-        return res.json({
-            speech: speech,
-            displayText: speech,
-            source: 'apiai-webhook-sample'
-        });
     } catch (err) {
         console.error("Can't process request", err);
 
