@@ -13,41 +13,45 @@ function getMovies(params, callback) {
 	var personId = null;
 	var genreId = null;
 
-	searchPerson(params.actorName, function(data, error) {
-		if (error) {
-			console.error(error);
-			personId = INVALID_ID;
-		} else {
-			personId = data;
+	try {
+		searchPerson(params.actorName, function(data, error) {
+			if (error) {
+				console.error(error);
+				personId = INVALID_ID;
+			} else {
+				personId = data;
 
-			if (personId != INVALID_ID && personId != null) {
-				discoverMovies(personId, genreId, callback);
+				if (personId != INVALID_ID && personId != null) {
+					discoverMovies(personId, genreId, callback);
+				}
 			}
-		}
 
-		//error
-		if (genreId == INVALID_ID && personId == INVALID_ID) {
-			callback(null, "Generic problem");
-		}
-	});
-
-	searchGenre(params.genreName, function(data, error) {
-		if (error) {
-			console.error(error);
-			genreId = INVALID_ID;
-		} else {
-			genreId = data;
-
-			if (personId != INVALID_ID && personId != null) {
-				discoverMovies(personId, genreId, callback);
+			//error
+			if (genreId == INVALID_ID && personId == INVALID_ID) {
+				callback(null, "Generic problem");
 			}
-		}
+		});
 
-		//error
-		if (genreId == INVALID_ID && personId == INVALID_ID) {
-			callback(null, "Generic problem");
-		}
-	});
+		searchGenre(params.genreName, function(data, error) {
+			if (error) {
+				console.error(error);
+				genreId = INVALID_ID;
+			} else {
+				genreId = data;
+
+				if (personId != INVALID_ID && personId != null) {
+					discoverMovies(personId, genreId, callback);
+				}
+			}
+
+			//error
+			if (genreId == INVALID_ID && personId == INVALID_ID) {
+				callback(null, "Generic problem");
+			}
+		});
+	} catch (err) {
+    	callback(null,"Server exception");
+    }
 }
 
 //DISCOVER MOVIES
