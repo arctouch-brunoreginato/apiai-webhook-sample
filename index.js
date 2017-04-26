@@ -40,7 +40,8 @@ restService.post('/hook', function (req, res) {
 
                             //success
                             return res.json ({
-                                data: data
+                                speech: data,
+                                displayText: data,
                             });
                         });
                     }
