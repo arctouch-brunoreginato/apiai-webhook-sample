@@ -80,7 +80,7 @@ function discoverMovies(personId, genreId, callback) {
 			if (results.length > 0) {
 				var firstMovie = results[0];
 				if (firstMovie) {
-					return callback(firstMovie.original_title);
+					return callback(firstMovie.original_title + " - " + firstMovie.overview);
 				}
 			}
 
