@@ -21,10 +21,10 @@ restService.post('/hook', function (req, res) {
 
                     var action = actions[actionName];
                     if (action == undefined || action == null) {
-                        if res.headerSent {
+                        if (res.headerSent) {
                             return
                         }
-                        
+
                         return res.status(404).json({
                             status: {
                                 code: 404,
@@ -36,7 +36,7 @@ restService.post('/hook', function (req, res) {
                         
                         action(params, function(data, error) {
                             if (error) {
-                                if res.headerSent {
+                                if (res.headerSent) {
                                     return
                                 }
 
@@ -47,7 +47,7 @@ restService.post('/hook', function (req, res) {
                             }
 
                             //success
-                            if res.headerSent {
+                            if (res.headerSent) {
                                 return
                             }
 
@@ -62,7 +62,7 @@ restService.post('/hook', function (req, res) {
             }
         }
     } catch (err) {
-        if res.headerSent {
+        if (res.headerSent) {
             return
         }
 
