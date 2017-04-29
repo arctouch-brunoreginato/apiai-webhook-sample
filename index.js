@@ -21,6 +21,10 @@ restService.post('/hook', function (req, res) {
 
                     var action = actions[actionName];
                     if (action == undefined || action == null) {
+                        if res.headerSent {
+                            return
+                        }
+                        
                         return res.status(404).json({
                             status: {
                                 code: 404,
@@ -32,6 +36,10 @@ restService.post('/hook', function (req, res) {
                         
                         action(params, function(data, error) {
                             if (error) {
+                                if res.headerSent {
+                                    return
+                                }
+
                                 return res.status(500).json({
                                     code: 501,
                                     msg: error
@@ -39,6 +47,10 @@ restService.post('/hook', function (req, res) {
                             }
 
                             //success
+                            if res.headerSent {
+                                return
+                            }
+
                             return res.json ({
                                 speech: data,
                                 displayText: data,
@@ -50,8 +62,11 @@ restService.post('/hook', function (req, res) {
             }
         }
     } catch (err) {
-        console.error("Can't process request", err);
+        if res.headerSent {
+            return
+        }
 
+        console.error("Can't process request", err);
         return res.status(400).json({
             status: {
                 code: 400,
