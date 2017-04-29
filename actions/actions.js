@@ -22,7 +22,7 @@ function getMovies(params, callback) {
 				personId = data;
 
 				if (personId != INVALID_ID && personId != null) {
-					discoverMovies(personId, genreId, callback);
+					return discoverMovies(personId, genreId, callback);
 				}
 			}
 
@@ -40,7 +40,7 @@ function getMovies(params, callback) {
 				genreId = data;
 
 				if (personId != INVALID_ID && personId != null) {
-					discoverMovies(personId, genreId, callback);
+					return discoverMovies(personId, genreId, callback);
 				}
 			}
 
